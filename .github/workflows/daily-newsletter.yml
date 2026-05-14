@@ -1,0 +1,31 @@
+name: Daily Sports Newsletter
+
+on:
+  # 13:00 UTC = 8:00 AM EST (Nov–Mar) / 9:00 AM EDT (Mar–Nov)
+  # Change to 12:00 UTC if you want 8:00 AM EDT year-round in summer.
+  schedule:
+    - cron: '0 13 * * *'
+
+  # Lets you trigger a test run from the Actions tab at any time.
+  workflow_dispatch:
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Send sports newsletter
+        env:
+          REPORT_RECIPIENT: ${{ secrets.REPORT_RECIPIENT }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python send_newsletter.py
