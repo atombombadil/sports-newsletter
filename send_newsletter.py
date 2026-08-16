@@ -4,6 +4,7 @@
 import json
 import os
 import smtplib
+import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
@@ -66,14 +67,17 @@ def fmt_et(iso: str) -> str:
 
 # ── ESPN API ──────────────────────────────────────────────────────────────────
 
-def _get(url: str):
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "sports-newsletter/2.0"})
-        with urllib.request.urlopen(req, timeout=15) as r:
-            return json.loads(r.read())
-    except Exception as e:
-        print(f"  fetch error: {e}")
-        return None
+def _get(url: str, retries: int = 3):
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url)
+            with urllib.request.urlopen(req, timeout=15) as r:
+                return json.loads(r.read())
+        except Exception as e:
+            print(f"  fetch error (attempt {attempt + 1}/{retries}): {e}")
+            if attempt < retries - 1:
+                time.sleep(2 * (attempt + 1))
+    return None
 
 def fetch_scoreboard(path: str, date_str: str):
     return _get(f"{ESPN_BASE}/{path}/scoreboard?dates={date_str}")
