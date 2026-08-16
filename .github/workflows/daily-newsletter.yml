@@ -3,8 +3,9 @@ name: Daily Sports Newsletter
 on:
   # 13:00 UTC = 8:00 AM EST (Nov–Mar) / 9:00 AM EDT (Mar–Nov)
   # Change to 12:00 UTC if you want 8:00 AM EDT year-round in summer.
+  # June 29 2026 changed to 7:45 EST to get ahead of presumed delay at top of the hour
   schedule:
-    - cron: '0 13 * * *'
+    - cron: '45 12 * * *'
 
   # Lets you trigger a test run from the Actions tab at any time.
   workflow_dispatch:
