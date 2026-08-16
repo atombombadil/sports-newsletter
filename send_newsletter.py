@@ -66,9 +66,20 @@ def fmt_et(iso: str) -> str:
 
 # ── ESPN API ──────────────────────────────────────────────────────────────────
 
+
 def _get(url: str):
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+        ),
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.espn.com/",
+        "Origin": "https://www.espn.com",
+    }
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "sports-newsletter/2.0"})
+        req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=15) as r:
             return json.loads(r.read())
     except Exception as e:
